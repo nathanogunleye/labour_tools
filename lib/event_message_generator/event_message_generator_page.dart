@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:labour_tools/event_message_generator/model/event.dart';
-import 'package:labour_tools/main.dart';
 
 class EventMessageGeneratorPage extends StatefulWidget {
   const EventMessageGeneratorPage({
@@ -25,84 +24,106 @@ class _EventMessageGeneratorPageState extends State<EventMessageGeneratorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: labourMaterialRed.shade50,
-        title: const Text('Events Message Generator'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(50.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              TextField(
-                readOnly: true,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: _uploadedFileName,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                'Events Message Generator',
+                style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          type: FileType.custom,
-                          allowedExtensions: [
-                            "csv",
-                          ],
-                        );
+            ),
+            const SelectableText(
+              '1. Log into Organise: https://organise.labour.org.uk/\n'
+              '2. Go to Events and search the events you want to export\n'
+              '3. Export CSV\n'
+              '4. Upload the CSV file below and click Generate Message!\n',
+            ),
+            TextField(
+              readOnly: true,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: _uploadedFileName,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: [
+                          "csv",
+                        ],
+                      );
 
-                        if (result != null && result.files.isNotEmpty) {
-                          final Uint8List fileBytes = result.files.first.bytes!;
-                          final String fileName = result.files.first.name;
+                      if (result != null && result.files.isNotEmpty) {
+                        final Uint8List fileBytes = result.files.first.bytes!;
+                        final String fileName = result.files.first.name;
 
-                          _csvString = utf8.decode(fileBytes);
+                        _csvString = utf8.decode(fileBytes);
 
-                          setState(() {
-                            _uploadedFileName = fileName;
-                          });
-                        }
-                      },
-                      child: const Text('Choose CSV File...'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
                         setState(() {
-                          _textEditingController.text =
-                              convertToMessage(_csvString);
+                          _uploadedFileName = fileName;
                         });
-                      },
-                      child: const Text('Generate Message!'),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _textEditingController,
-                  keyboardType: TextInputType.multiline,
-                  scrollController: _scrollController,
-                  readOnly: true,
-                  minLines: 20,
-                  maxLines: 50,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Your message will appear here',
+                      }
+                    },
+                    child: const Text('Choose CSV File...'),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _textEditingController.text =
+                            convertToMessage(_csvString);
+                      });
+                    },
+                    child: const Text('Generate Message!'),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: TextField(
+                controller: _textEditingController,
+                keyboardType: TextInputType.multiline,
+                scrollController: _scrollController,
+                readOnly: true,
+                minLines: 20,
+                maxLines: 50,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Your message will appear here',
+                ),
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                onPressed: () {
+                  Clipboard.setData(
+                    ClipboardData(text: _textEditingController.text),
+                  );
+                },
+                child: const Text('Copy to Clipboard'),
+              ),
+            ),
+          ],
         ),
       ),
     );
