@@ -1,11 +1,5 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:labour_tools/event_message_generator/event_message_generator_page.dart';
-import 'package:labour_tools/event_message_generator/model/event.dart';
 import 'package:labour_tools/home/home_page.dart';
 
 void main() {
@@ -42,6 +36,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           backgroundColor: labourPrimaryColor,
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
           titleTextStyle: TextStyle(
             color: Colors.white,
           ),
@@ -79,7 +76,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Labour Tools'),
+        title: const Text(
+          'Labour Tools',
+        ),
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -102,7 +101,12 @@ class _MainPageState extends State<MainPage> {
               decoration: BoxDecoration(
                 color: labourPrimaryColor,
               ),
-              child: Text('Menu'),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
             ListTile(
               title: const Text('Home'),
