@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:labour_tools/about/about_page.dart';
 import 'package:labour_tools/event_message_generator/event_message_generator_page.dart';
+import 'package:labour_tools/firebase_options.dart';
 import 'package:labour_tools/home/home_page.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
