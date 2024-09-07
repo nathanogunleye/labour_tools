@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:labour_tools/about/about_page.dart';
 import 'package:labour_tools/event_message_generator/event_message_generator_page.dart';
 import 'package:labour_tools/home/home_page.dart';
 
@@ -70,6 +71,7 @@ class _MainPageState extends State<MainPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     EventMessageGeneratorPage(),
+    AboutPage(),
   ];
 
   @override
@@ -124,6 +126,16 @@ class _MainPageState extends State<MainPage> {
               onTap: () {
                 // Update the state of the app
                 _onItemTapped(1);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('About'),
+              selected: _selectedIndex == 2,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(2);
                 // Then close the drawer
                 Navigator.pop(context);
               },
